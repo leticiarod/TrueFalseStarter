@@ -11,7 +11,7 @@ import GameKit
 import AudioToolbox
 
 class ViewController: UIViewController {
-    
+    // initial code
     let questionsPerRound = 4
     var questionsAsked = 0
     var correctQuestions = 0
