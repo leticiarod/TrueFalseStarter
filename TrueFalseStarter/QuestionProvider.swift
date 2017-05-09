@@ -8,13 +8,19 @@
 
 import GameplayKit
 
+struct Question {
+    var questionTitle: String
+    var answerOptions: [String]
+    var correctAnswer: String
+}
+
 struct QuestionProvider {
-    // It is assumed that the correct answers are always in the first position of the array.
-    let trivia: [[String : [String]]] = [
-        ["Question": ["Only female koalas can whistle"], "Answer": ["koalas1", "koalas2", "koalas3", "koalas4"], "CorrectAnswer": ["koalas2"]],
-        ["Question": ["Blue whales are technically whales"], "Answer": ["whales1", "whales2","whales3"], "CorrectAnswer": ["whales3"]],
-        ["Question": ["Camels are cannibalistic"], "Answer": ["Camels1", "Camels2", "Camels3", "Camels4"], "CorrectAnswer": ["Camels4"]],
-        ["Question": ["All ducks are birds"], "Answer": ["ducks1", "ducks2", "ducks3"], "CorrectAnswer": ["ducks1"]]
+    
+    let trivia: [Question] = [
+        Question(questionTitle: "Only female koalas can whistle", answerOptions: ["koalas1", "koalas2", "koalas3", "koalas4"], correctAnswer: "koalas2"),
+        Question(questionTitle: "Blue whales are technically whales", answerOptions: ["whales1", "whales2","whales3"], correctAnswer: "whales3"),
+        Question(questionTitle: "Camels are cannibalistic", answerOptions: ["Camels1", "Camels2", "Camels3", "Camels4"], correctAnswer: "Camels4"),
+        Question(questionTitle: "All ducks are birds", answerOptions: ["ducks1", "ducks2", "ducks3"], correctAnswer: "ducks1")
     ]
     
     func randomIndexOfSelectedQuestion() -> Int {
@@ -24,27 +30,24 @@ struct QuestionProvider {
     }
     
     func randomQuestion(indexOfSelectedQuestion: Int) -> String {
-        let question = ""
-        let questionDictionary = trivia[indexOfSelectedQuestion]
         
-        if let question = questionDictionary["Question"] {
-            return question[0]
-        }
-        else{
-            return question
-        }
+        let questionArray = trivia[indexOfSelectedQuestion]
+        
+       return questionArray.questionTitle
+   
     }
     
     func randomAnswer(indexOfSelectedQuestion: Int) -> [String] {
-        let answer: [String] = Array()
-        let questionDictionary = trivia[indexOfSelectedQuestion]
+       
+        let questionArray = trivia[indexOfSelectedQuestion]
         
-        if let answer = questionDictionary["Answer"] {
-            return answer
-        }
-        else{
-            return answer
-            }
+        return questionArray.answerOptions
+        
     }
-
+    
+    func getCorrectAnswerByQuestion(in index: Int) -> String {
+        let questionArray = trivia[index]
+        
+        return questionArray.correctAnswer
+    }
 }

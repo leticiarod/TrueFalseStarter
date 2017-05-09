@@ -55,8 +55,9 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
-        print("muestro el indexOfSelectedQuestion \(indexOfSelectedQuestion)")
+        
         indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
+        
         let question = questionProvider.randomQuestion(indexOfSelectedQuestion: indexOfSelectedQuestion)
         questionField.text = question
         playAgainButton.isHidden = true
@@ -72,7 +73,7 @@ class ViewController: UIViewController {
             secondAnswerButton.setTitle(answerArrays[1], for: .normal)
             thirdAnswerButton.setTitle(answerArrays[2], for: .normal)
             
-            // The constraints for 3-option questions are activated
+            // The constraints for 3-option questions are activated.
             NSLayoutConstraint.activate([xConstraint, yConstraint, firstAnswerButtonHeightConstraint,secondAnswerButtonHeightConstraint, secondAnswerButtonBottomMarginConstraint, secondAnswerButtonTopMarginConstraint])
        }
         else {
@@ -83,7 +84,7 @@ class ViewController: UIViewController {
             thirdAnswerButton.setTitle(answerArrays[2], for: .normal)
             fourthAnswerButton.setTitle(answerArrays[3], for: .normal)
             
-            // The constraints for 3-option questions are deactivated since at this point we are on the case of 4-option questions
+            // The constraints for 3-option questions are deactivated since at this point we are on the case of 4-option questions.
             NSLayoutConstraint.deactivate([xConstraint, yConstraint, firstAnswerButtonHeightConstraint,secondAnswerButtonHeightConstraint, secondAnswerButtonBottomMarginConstraint, secondAnswerButtonTopMarginConstraint])
         }
     }
@@ -107,7 +108,8 @@ class ViewController: UIViewController {
         // Increment the questions asked counter
         questionsAsked += 1
         
-        let correctAnswer = questionProvider.randomAnswer(indexOfSelectedQuestion: indexOfSelectedQuestion)[0]
+        // Obtains the correct answer from the QuestionProvider given the index in wich is the actual question.
+        let correctAnswer = questionProvider.getCorrectAnswerByQuestion(in: indexOfSelectedQuestion)
       
         if (sender === firstAnswerButton &&  firstAnswerButton.titleLabel?.text == correctAnswer) ||
             (sender === secondAnswerButton && secondAnswerButton.titleLabel?.text == correctAnswer) ||
