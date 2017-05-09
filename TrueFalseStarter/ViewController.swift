@@ -37,7 +37,11 @@ class ViewController: UIViewController {
     var secondAnswerButtonBottomMarginConstraint = NSLayoutConstraint()
     var secondAnswerButtonTopMarginConstraint = NSLayoutConstraint()
     var playAgainButtonBottomMarginConstraint = NSLayoutConstraint()
-
+    
+    // Array containing the answered questions indexes
+    
+    var answeredQuestionIndexesArray: [Int] = Array()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadGameStartSound()
@@ -55,9 +59,13 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
-        
         indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
-        
+        var isRepeated = isIndexOfSelectedQuestionRepetead()
+        while isRepeated {
+            indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
+            isRepeated = isIndexOfSelectedQuestionRepetead()
+        }
+        answeredQuestionIndexesArray.append(indexOfSelectedQuestion)
         let question = questionProvider.randomQuestion(indexOfSelectedQuestion: indexOfSelectedQuestion)
         questionField.text = question
         playAgainButton.isHidden = true
@@ -121,8 +129,6 @@ class ViewController: UIViewController {
         } else {
             correctAnswerLabel.text = "Sorry, that's not it!"
         }
-        
-        
         loadNextRoundWithDelay(seconds: 2)
     }
     
@@ -147,6 +153,7 @@ class ViewController: UIViewController {
         
         questionsAsked = 0
         correctQuestions = 0
+        answeredQuestionIndexesArray = Array()
         nextRound()
     }
     
@@ -184,6 +191,20 @@ class ViewController: UIViewController {
         secondAnswerButtonBottomMarginConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .bottom, relatedBy: .lessThanOrEqual, toItem: thirdAnswerButton, attribute: .bottom, multiplier: 1, constant: 90)
         secondAnswerButtonTopMarginConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .top, relatedBy: .lessThanOrEqual, toItem: firstAnswerButton, attribute: .top, multiplier: 1, constant: 90)
        // playAgainButtonBottomMarginConstraint = NSLayoutConstraint(item: playAgainButton, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: self.view, attribute: .bottom, multiplier: 1, constant: 60)
+    }
+    
+    func isIndexOfSelectedQuestionRepetead() -> Bool {
+        var isRepeated = false
+        var i = 0
+        while !isRepeated && i < answeredQuestionIndexesArray.count {
+            if(answeredQuestionIndexesArray[i] == indexOfSelectedQuestion){
+                isRepeated = true
+            }
+            else {
+                i+=1
+            }
+        }
+        return isRepeated
     }
 }
 
