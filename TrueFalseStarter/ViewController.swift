@@ -19,25 +19,34 @@ class ViewController: UIViewController {
     
     var gameSound: SystemSoundID = 0
     
-    let trivia: [[String : String]] = [
-        ["Question": "Only female koalas can whistle", "Answer": "False"],
-        ["Question": "Blue whales are technically whales", "Answer": "True"],
-        ["Question": "Camels are cannibalistic", "Answer": "False"],
-        ["Question": "All ducks are birds", "Answer": "True"]
-    ]
-    
+    let questionProvider = QuestionProvider()
+ 
     @IBOutlet weak var questionField: UILabel!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
+    @IBOutlet weak var firstAnswerButton: UIButton!
+    @IBOutlet weak var secondAnswerButton: UIButton!
+    @IBOutlet weak var thirdAnswerButton: UIButton!
+    @IBOutlet weak var fourthAnswerButton: UIButton!
     @IBOutlet weak var playAgainButton: UIButton!
+    @IBOutlet weak var correctAnswerLabel: UILabel!
     
+    // constraints
+    var xConstraint = NSLayoutConstraint()
+    var yConstraint = NSLayoutConstraint()
+    var firstAnswerButtonHeightConstraint = NSLayoutConstraint()
+    var secondAnswerButtonHeightConstraint = NSLayoutConstraint()
+    var secondAnswerButtonBottomMarginConstraint = NSLayoutConstraint()
+    var secondAnswerButtonTopMarginConstraint = NSLayoutConstraint()
+    var playAgainButtonBottomMarginConstraint = NSLayoutConstraint()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         loadGameStartSound()
         // Start game
         playGameStartSound()
+        // creo las constraints
+        createConstraintsThreeOptionsQuestions()
         displayQuestion()
+        displayAnswer()
     }
 
     override func didReceiveMemoryWarning() {
@@ -46,16 +55,46 @@ class ViewController: UIViewController {
     }
     
     func displayQuestion() {
-        indexOfSelectedQuestion = GKRandomSource.sharedRandom().nextInt(upperBound: trivia.count)
-        let questionDictionary = trivia[indexOfSelectedQuestion]
-        questionField.text = questionDictionary["Question"]
+        print("muestro el indexOfSelectedQuestion \(indexOfSelectedQuestion)")
+        indexOfSelectedQuestion = questionProvider.randomIndexOfSelectedQuestion()
+        let question = questionProvider.randomQuestion(indexOfSelectedQuestion: indexOfSelectedQuestion)
+        questionField.text = question
         playAgainButton.isHidden = true
+        
+    }
+    
+    func displayAnswer(){
+        let answerArrays = questionProvider.randomAnswer(indexOfSelectedQuestion: indexOfSelectedQuestion)
+        
+        if answerArrays.count == 3 {
+            fourthAnswerButton.isHidden = true
+            firstAnswerButton.setTitle(answerArrays[0], for: .normal)
+            secondAnswerButton.setTitle(answerArrays[1], for: .normal)
+            thirdAnswerButton.setTitle(answerArrays[2], for: .normal)
+            
+            // The constraints for 3-option questions are activated
+            NSLayoutConstraint.activate([xConstraint, yConstraint, firstAnswerButtonHeightConstraint,secondAnswerButtonHeightConstraint, secondAnswerButtonBottomMarginConstraint, secondAnswerButtonTopMarginConstraint])
+       }
+        else {
+            // if amount of answer is 4
+            fourthAnswerButton.isHidden = false
+            firstAnswerButton.setTitle(answerArrays[0], for: .normal)
+            secondAnswerButton.setTitle(answerArrays[1], for: .normal)
+            thirdAnswerButton.setTitle(answerArrays[2], for: .normal)
+            fourthAnswerButton.setTitle(answerArrays[3], for: .normal)
+            
+            // The constraints for 3-option questions are deactivated since at this point we are on the case of 4-option questions
+            NSLayoutConstraint.deactivate([xConstraint, yConstraint, firstAnswerButtonHeightConstraint,secondAnswerButtonHeightConstraint, secondAnswerButtonBottomMarginConstraint, secondAnswerButtonTopMarginConstraint])
+        }
     }
     
     func displayScore() {
         // Hide the answer buttons
-        trueButton.isHidden = true
-        falseButton.isHidden = true
+        firstAnswerButton.isHidden = true
+        secondAnswerButton.isHidden = true
+        thirdAnswerButton.isHidden = true
+        fourthAnswerButton.isHidden = true
+        correctAnswerLabel.isHidden = true
         
         // Display play again button
         playAgainButton.isHidden = false
@@ -68,15 +107,19 @@ class ViewController: UIViewController {
         // Increment the questions asked counter
         questionsAsked += 1
         
-        let selectedQuestionDict = trivia[indexOfSelectedQuestion]
-        let correctAnswer = selectedQuestionDict["Answer"]
-        
-        if (sender === trueButton &&  correctAnswer == "True") || (sender === falseButton && correctAnswer == "False") {
+        let correctAnswer = questionProvider.randomAnswer(indexOfSelectedQuestion: indexOfSelectedQuestion)[0]
+      
+        if (sender === firstAnswerButton &&  firstAnswerButton.titleLabel?.text == correctAnswer) ||
+            (sender === secondAnswerButton && secondAnswerButton.titleLabel?.text == correctAnswer) ||
+            (sender === thirdAnswerButton &&  thirdAnswerButton.titleLabel?.text == correctAnswer) ||
+        (sender === fourthAnswerButton &&  fourthAnswerButton.titleLabel?.text == correctAnswer)
+        {
             correctQuestions += 1
-            questionField.text = "Correct!"
+            correctAnswerLabel.text = "Correct!"
         } else {
-            questionField.text = "Sorry, wrong answer!"
+            correctAnswerLabel.text = "Sorry, that's not it!"
         }
+        
         
         loadNextRoundWithDelay(seconds: 2)
     }
@@ -88,20 +131,22 @@ class ViewController: UIViewController {
         } else {
             // Continue game
             displayQuestion()
+            displayAnswer()
         }
     }
     
     @IBAction func playAgain() {
         // Show the answer buttons
-        trueButton.isHidden = false
-        falseButton.isHidden = false
+        firstAnswerButton.isHidden = false
+        secondAnswerButton.isHidden = false
+        thirdAnswerButton.isHidden = false
+        fourthAnswerButton.isHidden = false
+        correctAnswerLabel.isHidden = false
         
         questionsAsked = 0
         correctQuestions = 0
         nextRound()
     }
-    
-
     
     // MARK: Helper Methods
     
@@ -125,6 +170,18 @@ class ViewController: UIViewController {
     
     func playGameStartSound() {
         AudioServicesPlaySystemSound(gameSound)
+    }
+    
+    func createConstraintsThreeOptionsQuestions(){
+        
+        // The necessary constraints are created to have 3 options displayed on the screen.
+        xConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: 0)
+        yConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .centerY, relatedBy: .equal, toItem: self.view, attribute: .centerY, multiplier: 1, constant: 0)
+        firstAnswerButtonHeightConstraint = NSLayoutConstraint(item: firstAnswerButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 32)
+        secondAnswerButtonHeightConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .height, multiplier: 1, constant: 32)
+        secondAnswerButtonBottomMarginConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .bottom, relatedBy: .lessThanOrEqual, toItem: thirdAnswerButton, attribute: .bottom, multiplier: 1, constant: 90)
+        secondAnswerButtonTopMarginConstraint = NSLayoutConstraint(item: secondAnswerButton, attribute: .top, relatedBy: .lessThanOrEqual, toItem: firstAnswerButton, attribute: .top, multiplier: 1, constant: 90)
+       // playAgainButtonBottomMarginConstraint = NSLayoutConstraint(item: playAgainButton, attribute: .bottom, relatedBy: .greaterThanOrEqual, toItem: self.view, attribute: .bottom, multiplier: 1, constant: 60)
     }
 }
 
