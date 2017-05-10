@@ -22,6 +22,9 @@ class ViewController: UIViewController {
     var gameCorrectAnswerSound: SystemSoundID = 0
     var gameIncorrectAnswerSound: SystemSoundID = 0
     var gameEndOfGameSound: SystemSoundID = 0
+    var gameErrorGameSound: SystemSoundID = 0
+    var gameLoserSound: SystemSoundID = 0
+    var gameBadassVictorySound: SystemSoundID = 0
     
     let questionProvider = QuestionProvider()
  
@@ -35,7 +38,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var nextQuestionButton: UIButton!
     @IBOutlet var firstAnswerButtonTopConstraint: NSLayoutConstraint!
     
-    // constraints
+    // Constraints
     var xConstraint = NSLayoutConstraint()
     var yConstraint = NSLayoutConstraint()
     var firstAnswerButtonHeightConstraint = NSLayoutConstraint()
@@ -44,10 +47,7 @@ class ViewController: UIViewController {
     // Array containing the answered questions indexes
     var answeredQuestionIndexesArray: [Int] = Array()
     
-    //
     var correctAnswer = ""
-    
-    //
     var task = DispatchWorkItem(block: {()})
     
     override func viewDidLoad() {
@@ -117,8 +117,21 @@ class ViewController: UIViewController {
     }
     
     func displayScore() {
+        
+        if correctQuestions == questionsPerRound {
+            playBadassVictoryGameSound()
+        }
+        else {
+            if correctQuestions == 0 {
+                playloserGameSound()
+            }
+            else {
+                playGameEndOfGameSound()
+            }
+        }
+        
         // Hide the answer buttons
-        playGameEndOfGameSound()
+        
         firstAnswerButton.isHidden = true
         secondAnswerButton.isHidden = true
         thirdAnswerButton.isHidden = true
@@ -136,9 +149,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func checkAnswer(_ sender: UIButton) {
-        //
+        // If an option button is pressed the DispatchWorkItem task is cancelled.
         task.cancel()
-        // Obtains the correct answer from the QuestionProvider given the index in wich is the actual question.
+        // Obtains the correct answer (the actual question) from the QuestionProvider given the index.
         correctAnswer = questionProvider.getCorrectAnswerByQuestion(in: indexOfSelectedQuestion)
       
         if (sender === firstAnswerButton &&  firstAnswerButton.titleLabel?.text == correctAnswer) ||
@@ -159,18 +172,17 @@ class ViewController: UIViewController {
             playGameIncorrectAnswerSound()
         }
         
-        // seteo los colores de disabled en los botones
+        // The style constraints are setted for disabled buttons.
         disableButtons()
        
-        //hago visible la correct answer label 
+        // Sets visible the correct answer label
         
         correctAnswerLabel.isHidden = false
-        
-        // loadNextRoundWithDelay(seconds: 2)
     }
     
     func nextRound() {
         if questionsAsked == questionsPerRound {
+            // If current round is finished the DispatchWorkItem task is cancelled.
             task.cancel()
             // Game is over
             displayScore()
@@ -219,7 +231,8 @@ class ViewController: UIViewController {
     }
 
     func disableButtonsWithDelay(seconds: Int) {
-        task = DispatchWorkItem(block: {self.disableButtons()})
+        // A DispatchWorkItem task is created and assigned it into a global var to be able to run it as well as cancel it (from any part in the code)  if necessary.
+        task = DispatchWorkItem(block: {self.disableButtons(); self.playErrorGameSound()})
         
         // Converts a delay in seconds to nanoseconds as signed 64 bit integer
         let delay = Int64(NSEC_PER_SEC * UInt64(seconds))
@@ -228,9 +241,7 @@ class ViewController: UIViewController {
         
         // Executes the nextRound method at the dispatch time on the main queue
         DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: task)
-        //{
-          //  self.disableButtons()
-       // }
+        
     }
 
     func loadGameSounds() {
@@ -249,6 +260,18 @@ class ViewController: UIViewController {
         let pathToEndOfGameSoundFile = Bundle.main.path(forResource: "EndOfGame", ofType: "wav")
         let endOfGameSoundURL = URL(fileURLWithPath: pathToEndOfGameSoundFile!)
         AudioServicesCreateSystemSoundID(endOfGameSoundURL as CFURL, &gameEndOfGameSound)
+        
+        let pathToErrorSoundFile = Bundle.main.path(forResource: "ErrorSound", ofType: "wav")
+        let errorSoundURL = URL(fileURLWithPath: pathToErrorSoundFile!)
+        AudioServicesCreateSystemSoundID(errorSoundURL as CFURL, &gameErrorGameSound)
+        
+        let pathToLoserSoundFile = Bundle.main.path(forResource: "LoserSound", ofType: "wav")
+        let loserSoundURL = URL(fileURLWithPath: pathToLoserSoundFile!)
+        AudioServicesCreateSystemSoundID(loserSoundURL as CFURL, &gameLoserSound)
+        
+        let pathToBadassVictorySoundFile = Bundle.main.path(forResource: "BadassVictory", ofType: "wav")
+        let badassVictorySoundURL = URL(fileURLWithPath: pathToBadassVictorySoundFile!)
+        AudioServicesCreateSystemSoundID(badassVictorySoundURL as CFURL, &gameBadassVictorySound)
     }
     
     func playGameStartSound() {
@@ -265,6 +288,16 @@ class ViewController: UIViewController {
     
     func playGameEndOfGameSound() {
         AudioServicesPlaySystemSound(gameEndOfGameSound)
+    }
+    
+    func playErrorGameSound() {
+        AudioServicesPlaySystemSound(gameErrorGameSound)
+    }
+    func playloserGameSound() {
+        AudioServicesPlaySystemSound(gameLoserSound)
+    }
+    func playBadassVictoryGameSound() {
+        AudioServicesPlaySystemSound(gameBadassVictorySound)
     }
     
     func createConstraintsThreeOptionsQuestions(){
@@ -313,14 +346,13 @@ class ViewController: UIViewController {
     
     func disableButtons() {
         
-        // seteo los colores de disbaled en los botones
+        // The style constraints are setted for disabled buttons.
         
-        // Obtains the correct answer from the QuestionProvider given the index in wich is the actual question.
+        // Obtains the correct answer (the actual question) from the QuestionProvider given the index.
+        
         correctAnswer = questionProvider.getCorrectAnswerByQuestion(in: indexOfSelectedQuestion)
         
         let correctAnswerButton = getButtonForCorrectAnswer(correctAnswer: correctAnswer)
-        
-        
         
         let backgroundColorDisabledButton = UIColor(red:0.05, green:0.24, blue:0.33, alpha:1.0)
         let textColorDisabledButton = UIColor(red:0.28, green:0.38, blue:0.43, alpha:1.0)
@@ -337,11 +369,11 @@ class ViewController: UIViewController {
         fourthAnswerButton.backgroundColor = backgroundColorDisabledButton
         fourthAnswerButton.setTitleColor(textColorDisabledButton, for: .normal)
         
-        // seteo un color distinto a la respuesta correcta
+        // A different text color is setted to the correct answer.
         let textColorDisabledButtonCorrectAnswer = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
         correctAnswerButton.setTitleColor(textColorDisabledButtonCorrectAnswer, for: .normal)
         
-        // inhabilito los botones
+        // The buttons are disabled.
         
         firstAnswerButton.isEnabled = false
         secondAnswerButton.isEnabled = false
@@ -359,7 +391,7 @@ class ViewController: UIViewController {
     }
     
     func enableButtons() {
-        // seteo los colores de disbaled en los botones
+        // The style constraints are setted for enabled buttons
         let backgroundColorEnabledButton = UIColor(red:0.09, green:0.47, blue:0.58, alpha:1.0)
         let textColorEnabledButton = UIColor(red:1.00, green:1.00, blue:1.00, alpha:1.0)
         
@@ -375,8 +407,7 @@ class ViewController: UIViewController {
         fourthAnswerButton.backgroundColor = backgroundColorEnabledButton
         fourthAnswerButton.setTitleColor(textColorEnabledButton, for: .normal)
         
-        // habilito los botones
-        
+        // The buttons are enabled.
         firstAnswerButton.isEnabled = true
         secondAnswerButton.isEnabled = true
         thirdAnswerButton.isEnabled = true

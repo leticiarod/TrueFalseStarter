@@ -17,10 +17,10 @@ struct Question {
 struct QuestionProvider {
     
     let trivia: [Question] = [
-        Question(questionTitle: "Only female koalas can whistle", answerOptions: ["koalas1", "koalas2", "koalas3", "koalas4"], correctAnswer: "koalas2"),
-        Question(questionTitle: "Blue whales are technically whales", answerOptions: ["whales1", "whales2","whales3"], correctAnswer: "whales3"),
-        Question(questionTitle: "Camels are cannibalistic", answerOptions: ["Camels1", "Camels2", "Camels3", "Camels4"], correctAnswer: "Camels4"),
-        Question(questionTitle: "All ducks are birds", answerOptions: ["ducks1", "ducks2", "ducks3"], correctAnswer: "ducks1")
+        Question(questionTitle: "2 + 2?", answerOptions: ["6", "4", "10", "7"], correctAnswer: "4"),
+        Question(questionTitle: "4 x 3?", answerOptions: ["8", "3","12"], correctAnswer: "12"),
+        Question(questionTitle: "6 + 5?", answerOptions: ["20", "25", "11", "31"], correctAnswer: "11"),
+        Question(questionTitle: "28 - 1", answerOptions: ["27", "26", "0"], correctAnswer: "27")
     ]
     
     func randomIndexOfSelectedQuestion() -> Int {

@@ -17,6 +17,9 @@
 		9749EE8C1EC39AC20017C35B /* CorrectAnswer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9749EE891EC39AC20017C35B /* CorrectAnswer.wav */; };
 		9749EE8D1EC39AC20017C35B /* EndOfGame.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9749EE8A1EC39AC20017C35B /* EndOfGame.wav */; };
 		9749EE8E1EC39AC20017C35B /* IncorrectAnswer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9749EE8B1EC39AC20017C35B /* IncorrectAnswer.wav */; };
+		9749EE921EC3A4B70017C35B /* BadassVictory.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9749EE8F1EC3A4B70017C35B /* BadassVictory.wav */; };
+		9749EE931EC3A4B70017C35B /* ErrorSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9749EE901EC3A4B70017C35B /* ErrorSound.wav */; };
+		9749EE941EC3A4B70017C35B /* LoserSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9749EE911EC3A4B70017C35B /* LoserSound.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,9 @@
 		9749EE891EC39AC20017C35B /* CorrectAnswer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = CorrectAnswer.wav; sourceTree = "<group>"; };
 		9749EE8A1EC39AC20017C35B /* EndOfGame.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = EndOfGame.wav; sourceTree = "<group>"; };
 		9749EE8B1EC39AC20017C35B /* IncorrectAnswer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = IncorrectAnswer.wav; sourceTree = "<group>"; };
+		9749EE8F1EC3A4B70017C35B /* BadassVictory.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = BadassVictory.wav; sourceTree = "<group>"; };
+		9749EE901EC3A4B70017C35B /* ErrorSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ErrorSound.wav; sourceTree = "<group>"; };
+		9749EE911EC3A4B70017C35B /* LoserSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = LoserSound.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +70,9 @@
 		97093D3A1C913506001275BC /* TrueFalseStarter */ = {
 			isa = PBXGroup;
 			children = (
+				9749EE8F1EC3A4B70017C35B /* BadassVictory.wav */,
+				9749EE901EC3A4B70017C35B /* ErrorSound.wav */,
+				9749EE911EC3A4B70017C35B /* LoserSound.wav */,
 				9749EE891EC39AC20017C35B /* CorrectAnswer.wav */,
 				9749EE8A1EC39AC20017C35B /* EndOfGame.wav */,
 				9749EE8B1EC39AC20017C35B /* IncorrectAnswer.wav */,
@@ -142,7 +151,10 @@
 				97093D531C932116001275BC /* GameSound.wav in Resources */,
 				97093D461C913506001275BC /* LaunchScreen.storyboard in Resources */,
 				9749EE8C1EC39AC20017C35B /* CorrectAnswer.wav in Resources */,
+				9749EE921EC3A4B70017C35B /* BadassVictory.wav in Resources */,
+				9749EE931EC3A4B70017C35B /* ErrorSound.wav in Resources */,
 				97093D431C913506001275BC /* Assets.xcassets in Resources */,
+				9749EE941EC3A4B70017C35B /* LoserSound.wav in Resources */,
 				97093D411C913506001275BC /* Main.storyboard in Resources */,
 				9749EE8E1EC39AC20017C35B /* IncorrectAnswer.wav in Resources */,
 				9749EE8D1EC39AC20017C35B /* EndOfGame.wav in Resources */,
